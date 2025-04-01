@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import stats
 
 class BaseLogisticRegression:
     def __init__(self, learning_rate=0.01, num_iterations=1000):
@@ -26,3 +27,35 @@ class BaseLogisticRegression:
         activated = self.sigmoid(linear_combination)
         prediction = activated > threshold
         return prediction
+    
+
+class BaseKNN:
+    def __init__(self, X, y, K=5, distanceMeasure="Euclidean"):
+        self.K = K
+        self.X = X
+        self.y = y
+        self.distanceMeasure = distanceMeasure
+
+    def fit(self, X, y):
+        self.X = X
+        self.y = y
+
+    def getDistance(self, x1, x2):
+        if self.distanceMeasure == "Euclidean":
+            # distance = np.sqrt(np.sum((x1 - x2)**2))
+            distance = np.linalg.norm(x1 - x2)
+        return distance
+
+    def get_K_NN(self, x):
+        distances = np.array([self.getDistance(row, x) for row in self.X])
+        K_neighbours_indices = np.argsort(distances)[:self.K]
+        NN_classes = self.y[K_neighbours_indices]
+        
+        return NN_classes
+    
+    def predict(self, X):
+        predictions = [stats.mode(self.get_K_NN(x), keepdims=False).mode for x in X]
+        return np.array(predictions)
+        # K_NN = self.get_K_NN(x)
+        # # print(K_NN.shape)
+        # return stats.mode(K_NN)
