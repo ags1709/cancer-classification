@@ -30,9 +30,9 @@ X = scaler.fit_transform(X)
 # Modeling
 
 # Base model - K-Nearest-Neighbours
-baseKNN = BaseSoftKNN(X, y, 5)
+baseKNN = BaseSoftKNN(K=5)
 evaluateModelLOOCV(baseKNN, X, y)
-evaluateModelLOOCVNoOutliers(baseKNN, X, y)
+# evaluateModelLOOCVNoOutliers(baseKNN, X, y)
 
 # Logistic Regression
 # logReg = LogisticRegression(C=0.55, max_iter=1000)
