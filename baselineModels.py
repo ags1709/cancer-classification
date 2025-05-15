@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import stats
+from sklearn.base import BaseEstimator, ClassifierMixin
 
 class BaseKNN:
     def __init__(self, X, y, K=5, distanceMeasure="Euclidean"):
@@ -37,21 +38,23 @@ class BaseKNN:
 
 # This KNN makes predictions by calculating probabilites and thresholding them somewhat like logistic regression. 
 # This is necessary for some performance measures like ROC AUC.
-class BaseSoftKNN:
-    def __init__(self, X, y, K=5, distanceMeasure="Euclidean"):
+# NOTE: Read up on the below classes BaseSoftKNN Inherits from
+class BaseSoftKNN(BaseEstimator, ClassifierMixin):
+    def __init__(self, K=5, distanceMeasure="Euclidean"):
         self.K = K
-        self.X = X
-        self.y = y
         self.distanceMeasure = distanceMeasure
 
     def fit(self, X, y):
         self.X = X
         self.y = y
+        self.classes_ = np.unique(y)
+        return self
 
     def getDistance(self, x1, x2):
         if self.distanceMeasure == "Euclidean":
-            # distance = np.sqrt(np.sum((x1 - x2)**2))
             distance = np.linalg.norm(x1 - x2)
+        else:
+            raise ValueError(f"Unknown distance measure: {self.distanceMeasure}")
         return distance
 
     def get_K_NN(self, x):
@@ -66,10 +69,11 @@ class BaseSoftKNN:
         probas = np.sum(np.array(classes), axis=1) / self.K
         return np.column_stack([1 - probas, probas]) # Convert to (n_samples, 2) format
     
-    def predict(self, X, threshold=0.5):
+    def predict(self, X):
         probas = self.predict_proba(X)
-        predictions = (probas > threshold).astype(int)
-        # return predictions
-        return predictions[:, 1]
+        return (probas[:, 1] >= 0.5).astype(int)
+        # probas = self.predict_proba(X)
+        # predictions = (probas > threshold).astype(int)
+        # return predictions[:, 1]
 
 
