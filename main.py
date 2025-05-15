@@ -1,6 +1,10 @@
 from evaluateModel import *
-from baselineModels import BaseLogisticRegression
 from sklearn.ensemble import BaggingClassifier, AdaBoostClassifier, RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from baselineModels import *
+import pandas as pd
+from sklearn import svm
 
 # --------------------------------------------------------------------------
 # Data preprocessing
@@ -25,20 +29,20 @@ X = scaler.fit_transform(X)
 # ---------------------------------------------------------------------------
 # Modeling
 
-# Base Model. Logistic Regression
-base_accuracy, base_error, base_f1_score, base_auc, base_fpr, base_tpr, base_fnr, base_tnr = kfold_evaluation(K, BaseLogisticRegression(num_iterations=1000), X, y, threshold=0.49864656)
+# Base model - K-Nearest-Neighbours
+baseKNN = BaseSoftKNN(X, y, 5)
+evaluateModelLOOCV(baseKNN, X, y)
 
 # Logistic Regression
-logReg_accuracy, logReg_error, logReg_f1_score, logReg_auc, logReg_fpr, logReg_tpr, logReg_fnr, logReg_tnr = kfold_evaluation_outliers_removed(K, LogisticRegression(max_iter=1000), X, y, threshold=0.49864656)
+logReg = LogisticRegression(C=0.55, max_iter=1000)
+evaluateModelLOOCV(logReg, X, y)
 
-# KNN
-knn_accuracy, knn_error, knn_f1_score, knn_auc, knn_fpr, knn_tpr, knn_fnr, knn_tnr = kfold_evaluation_outliers_removed(K, KNeighborsClassifier(n_neighbors=10), X, y)
+# Support Vector Machine
+SVM = svm.SVC(kernel="rbf", probability=True)
+evaluateModelLOOCV(SVM, X, y)
 
-# SVM
-svm_accuracy, svm_error, svm_f1_score, svm_auc, svm_fpr, svm_tpr, svm_fnr, svm_tnr = kfold_evaluation_outliers_removed(K, svm.SVC(kernel="rbf", probability=True), X, y)
-
-# Boosted Logistic Regression
-rfc_accuracy, rfc_error, rfc_f1_score, rfc_auc, rfc_fpr, rfc_tpr, rfc_fnr, rfc_tnr = kfold_evaluation_outliers_removed(K, AdaBoostClassifier(RandomForestClassifier()), X, y)
-
+# Random Forest
+# RF = RandomForestClassifier()
+# evaluateModelLOOCV(RF, X, y)
 
 

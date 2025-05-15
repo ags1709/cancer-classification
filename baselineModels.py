@@ -1,44 +1,6 @@
-class BaseLogisticRegression:
-    def __init__(self, learning_rate=0.00001, num_iterations=1000):
-        self.learning_rate = learning_rate
-        self.num_iterations=num_iterations
-        self.weights = None
+import numpy as np
+from scipy import stats
 
-    def sigmoid(self, x):
-        return 1 / (1+np.exp(-x))
-        # return np.where(x >= 0, 
-        #             1 / (1 + np.exp(-x)), 
-        #             np.exp(x) / (1 + np.exp(x)))
-
-    def fit(self, X, y):
-        X = np.hstack([np.ones([X.shape[0], 1]), X])
-
-        num_samples, num_features = X.shape
-        self.weights = np.zeros(num_features)
-        for i in range(self.num_iterations):
-            p = self.sigmoid(X @ self.weights)
-            lossGradient = X.T @ (y - p) / num_samples
-            self.weights = self.weights + self.learning_rate * (lossGradient)
-            
-            # Print loss
-            # if i % 100 == 0:  # Print every 100 iterations
-            #     loss = -np.mean(y * np.log(p + 1e-15) + (1 - y) * np.log(1 - p + 1e-15))
-            #     print(f"Iteration {i}: Loss = {loss:.4f}")
-
-    def predict_proba(self, X):
-        X = np.hstack([np.ones([X.shape[0], 1]), X])
-        probs = self.sigmoid(X @ self.weights)
-        return np.column_stack([1 - probs, probs])  # Convert to (n_samples, 2) format
-
-    def predict(self, X, threshold=0.49864656):
-        # X = np.hstack([np.ones([X.shape[0], 1]), X])
-        probabilities = self.predict_proba(X)[:,1]
-
-        # linear_combination = X @ self.weights
-        # activated = self.sigmoid(linear_combination)
-        # prediction = activated > threshold
-        return probabilities > threshold
-    
 class BaseKNN:
     def __init__(self, X, y, K=5, distanceMeasure="Euclidean"):
         self.K = K
@@ -73,6 +35,8 @@ class BaseKNN:
         # # print(K_NN.shape)
         # return stats.mode(K_NN)
 
+# This KNN makes predictions by calculating probabilites and thresholding them somewhat like logistic regression. 
+# This is necessary for some performance measures like ROC AUC.
 class BaseSoftKNN:
     def __init__(self, X, y, K=5, distanceMeasure="Euclidean"):
         self.K = K
@@ -105,5 +69,7 @@ class BaseSoftKNN:
     def predict(self, X, threshold=0.5):
         probas = self.predict_proba(X)
         predictions = (probas > threshold).astype(int)
-        return predictions
+        # return predictions
+        return predictions[:, 1]
+
 
