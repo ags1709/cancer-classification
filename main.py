@@ -32,14 +32,16 @@ X = scaler.fit_transform(X)
 # Base model - K-Nearest-Neighbours
 baseKNN = BaseSoftKNN(X, y, 5)
 evaluateModelLOOCV(baseKNN, X, y)
+evaluateModelLOOCVNoOutliers(baseKNN, X, y)
 
 # Logistic Regression
-logReg = LogisticRegression(C=0.55, max_iter=1000)
-evaluateModelLOOCV(logReg, X, y)
+# logReg = LogisticRegression(C=0.55, max_iter=1000)
+# evaluateModelLOOCV(logReg, X, y)
+# evaluateModelLOOCVNoOutliers(logReg, X, y)
 
 # Support Vector Machine
-SVM = svm.SVC(kernel="rbf", probability=True)
-evaluateModelLOOCV(SVM, X, y)
+# SVM = svm.SVC(kernel="rbf", probability=True)
+# evaluateModelLOOCV(SVM, X, y)
 
 # Random Forest
 # RF = RandomForestClassifier()
