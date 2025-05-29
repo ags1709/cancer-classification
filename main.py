@@ -5,7 +5,8 @@ from sklearn.preprocessing import StandardScaler
 from baselineModels import *
 import pandas as pd
 from sklearn import svm
-
+from sklearn.pipeline import Pipeline
+from thresholdAnalysis import *
 # --------------------------------------------------------------------------
 # Data preprocessing
 
@@ -22,29 +23,50 @@ X = df.drop(["Unnamed: 32", "diagnosis", "id"], axis=1)
 X = np.array(X)
 y = np.array(y)
 
-# Standardize data
-scaler = StandardScaler()
-X = scaler.fit_transform(X)
-
 # ---------------------------------------------------------------------------
 # Modeling
 
 # Base model - K-Nearest-Neighbours
-baseKNN = BaseSoftKNN(K=5)
-evaluateModelLOOCV(baseKNN, X, y)
-# evaluateModelLOOCVNoOutliers(baseKNN, X, y)
+baseKNNPipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("baseKNN", BaseSoftKNN(K=4))
+])
+evaluateModelLOOCV(baseKNNPipe, X, y)
+
 
 # Logistic Regression
-# logReg = LogisticRegression(C=0.55, max_iter=1000)
-# evaluateModelLOOCV(logReg, X, y)
-# evaluateModelLOOCVNoOutliers(logReg, X, y)
+logRegPipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("logReg", LogisticRegression(C=0.54, max_iter=1000))
+])
+# evaluateModelLOOCV(logRegPipe, X, y)
+
 
 # Support Vector Machine
-# SVM = svm.SVC(kernel="rbf", probability=True)
-# evaluateModelLOOCV(SVM, X, y)
+# SVM = svm.SVC(C=0.1, gamma="scale", kernel="linear", probability=True)
+SVMPipe = Pipeline([
+    ("Scaler", StandardScaler()),
+    ("SVM", svm.SVC(C=3, gamma="scale", kernel="rbf", probability=True))
+])
+# evaluateModelLOOCV(SVMPipe, X, y)
+
 
 # Random Forest
-# RF = RandomForestClassifier()
-# evaluateModelLOOCV(RF, X, y)
+RFPipe = Pipeline([
+    ("Scaler", StandardScaler()),
+    ("RF", RandomForestClassifier(max_depth=None, min_samples_leaf=1, min_samples_split=2, n_estimators=100))
+])
+# RF = RandomForestClassifier(max_depth=None, min_samples_leaf=1, min_samples_split=2, n_estimators=100)
+# evaluateModelLOOCV(RFPipe, X, y)
 
+# --------------------------------------------------------------------------------------------------
+# Analyze thresholds
 
+# logRegPipe.fit(X, y)
+# yProb = logRegPipe.predict_proba(X)[:,1]
+
+# threshold_df, best_thresholds = analyze_precision_recall_thresholds(
+#     y, yProb, model_name="Cancer Classifier"
+# )
+
+# print_threshold_recommendations(best_thresholds)

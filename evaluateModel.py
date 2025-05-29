@@ -41,7 +41,7 @@ def evaluateModelLOOCV(model, X, y):
     y_pred = np.array(y_pred)
     y_proba = np.array(y_proba)
 
-    print("\nLogReg Evaluation with Leave-One-Out CV:")
+    print("\nEvaluation with Leave-One-Out CV:")
     print("Confusion Matrix:")
     print(confusion_matrix(y_true, y_pred))
     print("Classification Report:")
@@ -49,12 +49,18 @@ def evaluateModelLOOCV(model, X, y):
     print("ROC AUC Score:", roc_auc_score(y_true, y_proba))
 
     # Plot ROC Curve using actual predictions
-    RocCurveDisplay.from_predictions(y_true, y_proba)
-    plt.title("ROC Curve - ModelName (LOOCV)")
+    display = RocCurveDisplay.from_predictions(y_true, y_proba)
+    plt.title("ROC Curve - Logistic Regression")
+
+    auc_score = roc_auc_score(y_true, y_proba)
+    display.ax_.legend([f"ROC Curve (AUC = {auc_score:.5f})"], loc="lower right")
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    # display.ax_.xaxis.set_label("False Positive Rate")
     plt.show()
 
 
-def evaluateModelLOOCVNoOutliers(model, X, y):
+def evaluateModelLOOCVNoOutliers(model, X, y):  
     loo = LeaveOneOut()
     y_true = []
     y_pred = []
