@@ -97,7 +97,7 @@ def analyze_precision_recall_thresholds(y_true, y_prob, model_name="Logistic Reg
     axes[0].plot(threshold_df['threshold'], threshold_df['precision'], 'b-', label='Precision', linewidth=2)
     axes[0].plot(threshold_df['threshold'], threshold_df['recall'], 'r-', label='Recall', linewidth=2)
     axes[0].plot(threshold_df['threshold'], threshold_df['f1_score'], 'g-', label='F1-Score', linewidth=2)
-    axes[0].axvline(x=best_thresholds['best_recall']['threshold'], color='orange', linestyle='--', 
+    axes[0].axvline(x=best_thresholds['best_f1']['threshold'], color='orange', linestyle='--', 
                    label=f"Best F1 ({best_thresholds['best_f1']['threshold']:.3f})")
     axes[0].set_xlabel('Threshold')
     axes[0].set_ylabel('Score')
