@@ -1,3 +1,6 @@
+# Code written and developed by: 
+# Anders Greve Sørensen - s235093
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import precision_recall_curve, average_precision_score
@@ -5,6 +8,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+from evaluateModel import *
 
 def analyze_precision_recall_thresholds(y_true, y_prob, model_name="Logistic Regression", 
                                       n_thresholds=100, plot_size=(15, 5)):
@@ -37,6 +41,7 @@ def analyze_precision_recall_thresholds(y_true, y_prob, model_name="Logistic Reg
     
     # Create evenly spaced thresholds for analysis
     threshold_range = np.linspace(0.01, 0.99, n_thresholds)
+    # threshold_range = np.linspace(0.0, 1, n_thresholds)
     
     # Calculate metrics for each threshold
     threshold_metrics = []
@@ -97,8 +102,10 @@ def analyze_precision_recall_thresholds(y_true, y_prob, model_name="Logistic Reg
     axes[0].plot(threshold_df['threshold'], threshold_df['precision'], 'b-', label='Precision', linewidth=2)
     axes[0].plot(threshold_df['threshold'], threshold_df['recall'], 'r-', label='Recall', linewidth=2)
     axes[0].plot(threshold_df['threshold'], threshold_df['f1_score'], 'g-', label='F1-Score', linewidth=2)
-    axes[0].axvline(x=best_thresholds['best_f1']['threshold'], color='orange', linestyle='--', 
-                   label=f"Best F1 ({best_thresholds['best_f1']['threshold']:.3f})")
+    # axes[0].axvline(x=best_thresholds["best_f1"]["threshold"], color='orange', linestyle='--', 
+    #                label=f"Best f1_score ({best_thresholds["best_f1"]["threshold"]:.3f})")
+    axes[0].axvline(x=0.5, color='orange', linestyle='--', 
+                   label=f"Default (0.5)")
     axes[0].set_xlabel('Threshold')
     axes[0].set_ylabel('Score')
     axes[0].set_title(f'{model_name}: Metrics vs Threshold')
@@ -208,19 +215,23 @@ df = pd.read_csv("data/Cancer_data.csv")
 df["diagnosis"] = df["diagnosis"].map({"B": 0, "M": 1})
 y = df["diagnosis"]
 X = df.drop(["Unnamed: 32", "diagnosis", "id"], axis=1)
+X = np.array(X)
+y = np.array(y)
 
 # Logistic Regression
 logRegPipe = Pipeline([
     ("scaler", StandardScaler()),
     ("logReg", LogisticRegression(C=0.54, max_iter=1000))
 ])
-logRegPipe.fit(X, y)
 
+yTrueLOOCV, yProbaLOOCV = evaluateModelLOOCVThresholded(logRegPipe, X, y, returnData=True, createPlot=False)
+# logRegPipe.fit(X, y)
 
-yProb = logRegPipe.predict_proba(X)[:,1]
+ 
+# yProb = logRegPipe.predict_proba(X)[:,1]
 
 threshold_df, best_thresholds = analyze_precision_recall_thresholds(
-    y, yProb, model_name="Logistic Regression"
+    yTrueLOOCV, yProbaLOOCV, model_name="Logistic Regression"
 )
 
 print_threshold_recommendations(best_thresholds)

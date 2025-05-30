@@ -1,3 +1,6 @@
+# Code written and developed by: 
+# Anders Greve Sørensen - s235093
+
 from evaluateModel import *
 from sklearn.ensemble import BaggingClassifier, AdaBoostClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -40,28 +43,6 @@ y = np.array(y)
 # cv = StratifiedKFold(n_splits=K, shuffle=True, random_state=42)
 K = 10
 cv = LeaveOneOut()
-
-pipe = Pipeline([
-    ("scaler", StandardScaler()),
-    ("KNN", BaseSoftKNN())
-])
-# Hyperparameter grid
-paramGrid = {
-    "KNN__K": list(range(1, 21))
-}
-grid = GridSearchCV(
-    pipe,
-    paramGrid,
-    cv=cv,
-    scoring="f1_macro")
-grid.fit(X, y)
-# grid_no_reduce = GridSearchCV(base_pipe, param_grid, cv=cv, scoring='accuracy')
-# grid_no_reduce.fit(X, y)
-
-print("Best baseSoftKNN Parameters:")
-print("Best Params:", grid.best_params_)
-print("Best CV score:", grid.best_score_)
-
 
 logReg_pipe = Pipeline([
     ("scaler", StandardScaler()),

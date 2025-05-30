@@ -1,3 +1,5 @@
+# Code written and developed by: 
+# Anders Greve Sørensen - s235093
 from evaluateModel import *
 from sklearn.ensemble import BaggingClassifier, AdaBoostClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -6,7 +8,7 @@ from baselineModels import *
 import pandas as pd
 from sklearn import svm
 from sklearn.pipeline import Pipeline
-from thresholdAnalysis import *
+# from thresholdAnalysis import *
 # --------------------------------------------------------------------------
 # Data preprocessing
 
@@ -19,27 +21,26 @@ df["diagnosis"] = df["diagnosis"].map({"B": 0, "M": 1})
 y = df["diagnosis"]
 
 # Drop useless features
-X = df.drop(["Unnamed: 32", "diagnosis", "id"], axis=1)
-X = np.array(X)
+Xdf = df.drop(["Unnamed: 32", "diagnosis", "id"], axis=1)
+X = np.array(Xdf)
 y = np.array(y)
 
 # ---------------------------------------------------------------------------
 # Modeling
-
-# Base model - K-Nearest-Neighbours
-baseKNNPipe = Pipeline([
-    ("scaler", StandardScaler()),
-    ("baseKNN", BaseSoftKNN(K=4))
-])
-evaluateModelLOOCV(baseKNNPipe, X, y)
-
 
 # Logistic Regression
 logRegPipe = Pipeline([
     ("scaler", StandardScaler()),
     ("logReg", LogisticRegression(C=0.54, max_iter=1000))
 ])
-# evaluateModelLOOCV(logRegPipe, X, y)
+evaluateModelLOOCVThresholded(logRegPipe, X, y, 0.5, createPlot=False)
+
+# Base model - K-Nearest-Neighbours
+baseKNNPipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("baseKNN", BaseSoftKNN(K=4))
+])
+# evaluateModelLOOCVThresholded(baseKNNPipe, X, y, createPlot=False)
 
 
 # Support Vector Machine
@@ -53,20 +54,50 @@ SVMPipe = Pipeline([
 
 # Random Forest
 RFPipe = Pipeline([
-    ("Scaler", StandardScaler()),
+    # ("Scaler", StandardScaler()),
     ("RF", RandomForestClassifier(max_depth=None, min_samples_leaf=1, min_samples_split=2, n_estimators=100))
 ])
-# RF = RandomForestClassifier(max_depth=None, min_samples_leaf=1, min_samples_split=2, n_estimators=100)
 # evaluateModelLOOCV(RFPipe, X, y)
 
-# --------------------------------------------------------------------------------------------------
-# Analyze thresholds
 
+# --------------------------------------------------------------------------------
+# Values of top 10 coefficient for logistic regression along with a bar graph of them
+
+# import pandas as pd
+# import numpy as np
+
+# # Get the feature names from the original data
 # logRegPipe.fit(X, y)
-# yProb = logRegPipe.predict_proba(X)[:,1]
 
-# threshold_df, best_thresholds = analyze_precision_recall_thresholds(
-#     y, yProb, model_name="Cancer Classifier"
+# feature_names = Xdf.columns
+
+# # Get the logistic regression model from the pipeline
+# logreg_model = logRegPipe.named_steps['logReg']
+
+# # Coefficients (since standardized, they are comparable)
+# coefficients = logreg_model.coef_[0]
+
+# # Create a DataFrame to view sorted importance
+# feature_importance_df = pd.DataFrame({
+#     'Feature': feature_names,
+#     'Coefficient': coefficients,
+#     'Abs_Coefficient': np.abs(coefficients)
+# }).sort_values(by='Abs_Coefficient', ascending=False)
+
+# print(feature_importance_df.head(20))  # Top 10 most "important" features
+
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+
+# plt.figure(figsize=(10, 6))
+# sns.barplot(
+#     data=feature_importance_df.head(10),  # or full list
+#     x='Coefficient', y='Feature',
+#     palette='coolwarm'
 # )
-
-# print_threshold_recommendations(best_thresholds)
+# plt.axvline(0, color='gray', linestyle='--')
+# plt.title('Top Logistic Regression Feature Coefficients')
+# plt.xlabel('Coefficient Value')
+# plt.ylabel('Feature')
+# plt.tight_layout()
+# plt.show()

@@ -1,45 +1,11 @@
+# Code written and developed by: 
+# Anders Greve Sørensen - s235093
+
 import numpy as np
-from scipy import stats
-from sklearn.base import BaseEstimator, ClassifierMixin
-
-class BaseKNN:
-    def __init__(self, X, y, K=5, distanceMeasure="Euclidean"):
-        self.K = K
-        self.X = X
-        self.y = y
-        self.distanceMeasure = distanceMeasure
-
-    def fit(self, X, y):
-        self.X = X
-        self.y = y
-
-    def getDistance(self, x1, x2):
-        if self.distanceMeasure == "Euclidean":
-            # distance = np.sqrt(np.sum((x1 - x2)**2))
-            distance = np.linalg.norm(x1 - x2)
-        return distance
-
-    def get_K_NN(self, x):
-        distances = np.array([self.getDistance(row, x) for row in self.X])
-        K_neighbours_indices = np.argsort(distances)[:self.K]
-        NN_classes = self.y[K_neighbours_indices]
-        
-        return NN_classes
-    
-    def predict(self, X):
-        toPrint = [self.get_K_NN(x) for x in X]
-        toPrint = np.array(toPrint)
-        print(toPrint.shape)
-        predictions = [stats.mode(self.get_K_NN(x), keepdims=False).mode for x in X]
-        return np.array(predictions)
-        # K_NN = self.get_K_NN(x)
-        # # print(K_NN.shape)
-        # return stats.mode(K_NN)
 
 # This KNN makes predictions by calculating probabilites and thresholding them somewhat like logistic regression. 
 # This is necessary for some performance measures like ROC AUC.
-# NOTE: Read up on the below classes BaseSoftKNN Inherits from
-class BaseSoftKNN(BaseEstimator, ClassifierMixin):
+class BaseSoftKNN():
     def __init__(self, K=5, distanceMeasure="Euclidean"):
         self.K = K
         self.distanceMeasure = distanceMeasure
@@ -72,8 +38,5 @@ class BaseSoftKNN(BaseEstimator, ClassifierMixin):
     def predict(self, X):
         probas = self.predict_proba(X)
         return (probas[:, 1] >= 0.5).astype(int)
-        # probas = self.predict_proba(X)
-        # predictions = (probas > threshold).astype(int)
-        # return predictions[:, 1]
 
 
