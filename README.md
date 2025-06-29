@@ -1,6 +1,5 @@
-# Breast Cancer Classification with Machine Learning
-
-A machine learning project for binary classification of breast cancer tumors as benign or malignant using the Wisconsin Breast Cancer Dataset.
+# Breast Cancer Classification
+A machine learning project for binary classification of breast cancer tumors as benign or malignant using the Wisconsin Breast Cancer Dataset (https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic).
 
 ## Project Overview
 
@@ -56,14 +55,17 @@ cancerClassification/
 
 ## Running the project
 
-First, navigate to the project folder. Make sure all requirements are installed.
+First, navigate to the project folder. Make sure all requirements are installed. Check the requirements.txt file, or simply run the command
+```bash
+pip install -r requirements.txt
+```
 
-To run the complete analysis with all models:
+Once the requirements have been installed, you can run the complete analysis with all models using:
 ```bash
 python main.py
 ```
 
-To run specific analyses:
+Or, to run specific analyses:
 ```bash
 # Run only model evaluation
 python main.py --evaluate
