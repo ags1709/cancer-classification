@@ -17,10 +17,10 @@ This project implements and compares multiple machine learning algorithms for br
 
 | Model | ROC-AUC Score | Accuracy | F1-score(avg over classes) | Best Parameters |
 |-------|---------------|-----------------|--------------|-----------------|
-| Logistic Regression | ~0.995 | 0.984 | 0.984 | C=0.54 |
-| Support Vector Machine | ~0.996 | 0.984 | 0.984 | C=3, kernel='rbf' |
-| Random Forest | ~0.991 | 0.961 | 0.961 |n_estimators=100, max_depth=None |
-| K-Nearest Neighbors | ~0.985 | 0.972 | 0.972 | K=4 |
+| Logistic Regression | 0.995 | 0.984 | 0.984 | C=0.54 |
+| Support Vector Machine | 0.996 | 0.984 | 0.984 | C=3, kernel='rbf' |
+| Random Forest | 0.991 | 0.961 | 0.961 |n_estimators=100, max_depth=None |
+| K-Nearest Neighbors | 0.985 | 0.972 | 0.972 | K=4 |
 
 
 ## Project Structure
