@@ -7,7 +7,7 @@ This project implements and compares multiple machine learning algorithms for br
 
 ### Key Features
 - Implementation of multiple classification algorithms (Logistic Regression, SVM, Random Forest, KNN)
-- Custom soft K-Nearest Neighbors implementation with probability predictions
+- Custom K-Nearest Neighbors implementation with probability predictions
 - Comprehensive evaluation metrics including ROC-AUC, precision, recall, and F1-score
 - Hyperparameter optimization using GridSearchCV with LOOCV
 - Threshold analysis to facilitate best recall-precision trade-off
