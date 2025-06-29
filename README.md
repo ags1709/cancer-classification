@@ -56,30 +56,7 @@ cancerClassification/
 
 ## Running the project
 
-### Prerequisites
-- Python 3.8 or higher
-- pip package manager
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/breast-cancer-classification.git
-cd breast-cancer-classification
-```
-
-<!-- 2. Create a virtual environment (recommended):
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-``` -->
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-### Running the Project
+First, navigate to the project folder. Make sure all requirements are installed.
 
 To run the complete analysis with all models:
 ```bash
