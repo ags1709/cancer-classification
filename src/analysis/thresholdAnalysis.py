@@ -54,17 +54,17 @@ def analyze_precision_recall_thresholds(y_true, y_prob, model_name="Model",
         f1_val = 2 * (precision_val * recall_val) / (precision_val + recall_val) \
                  if (precision_val + recall_val) > 0 else 0
         
-        # Calculate specificity and balanced accuracy
-        specificity_val = tn / (tn + fp) if (tn + fp) > 0 else 0
-        balanced_acc = (recall_val + specificity_val) / 2
+        # # Calculate specificity and balanced accuracy
+        # specificity_val = tn / (tn + fp) if (tn + fp) > 0 else 0
+        # balanced_acc = (recall_val + specificity_val) / 2
         
         threshold_metrics.append({
             'threshold': threshold,
             'precision': precision_val,
             'recall': recall_val,
             'f1_score': f1_val,
-            'specificity': specificity_val,
-            'balanced_accuracy': balanced_acc
+            # 'specificity': specificity_val,
+            # 'balanced_accuracy': balanced_acc
         })
     
     # Create DataFrame
@@ -78,7 +78,7 @@ def analyze_precision_recall_thresholds(y_true, y_prob, model_name="Model",
     max_recall = threshold_df['recall'].max()
     best_recall_idx = threshold_df[threshold_df['recall'] == max_recall]['threshold'].idxmax()
     
-    best_balanced_idx = threshold_df['balanced_accuracy'].idxmax()
+    # best_balanced_idx = threshold_df['balanced_accuracy'].idxmax()
     
     best_thresholds = {
         'best_f1': {
@@ -99,12 +99,12 @@ def analyze_precision_recall_thresholds(y_true, y_prob, model_name="Model",
             'recall': threshold_df.loc[best_recall_idx, 'recall'],
             'f1_score': threshold_df.loc[best_recall_idx, 'f1_score']
         },
-        'best_balanced': {
-            'threshold': threshold_df.loc[best_balanced_idx, 'threshold'],
-            'precision': threshold_df.loc[best_balanced_idx, 'precision'],
-            'recall': threshold_df.loc[best_balanced_idx, 'recall'],
-            'balanced_accuracy': threshold_df.loc[best_balanced_idx, 'balanced_accuracy']
-        }
+        # 'best_balanced': {
+        #     'threshold': threshold_df.loc[best_balanced_idx, 'threshold'],
+        #     'precision': threshold_df.loc[best_balanced_idx, 'precision'],
+        #     'recall': threshold_df.loc[best_balanced_idx, 'recall'],
+        #     'balanced_accuracy': threshold_df.loc[best_balanced_idx, 'balanced_accuracy']
+        # }
     }
     
     # Create visualizations
@@ -198,9 +198,9 @@ def print_threshold_recommendations(best_thresholds):
     print(f"   - Precision: {best_thresholds['best_recall']['precision']:.3f}")
     print(f"   - Recall: {best_thresholds['best_recall']['recall']:.3f}")
     
-    print("\n4. For balanced sensitivity/specificity:")
-    print(f"   Threshold: {best_thresholds['best_balanced']['threshold']:.3f}")
-    print(f"   - Balanced Accuracy: {best_thresholds['best_balanced']['balanced_accuracy']:.3f}")
+    # print("\n4. For balanced sensitivity/specificity:")
+    # print(f"   Threshold: {best_thresholds['best_balanced']['threshold']:.3f}")
+    # print(f"   - Balanced Accuracy: {best_thresholds['best_balanced']['balanced_accuracy']:.3f}")
     
     print("\nRecommendation for medical diagnosis:")
     print("Consider using a lower threshold (e.g., best recall threshold) to")
